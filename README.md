@@ -1,5 +1,7 @@
 # lockdiff
 
+*[Türkçe](README.tr.md) · English*
+
 **Turn an unreadable lockfile diff into a summary a reviewer can actually check.**
 
 [![CI](https://github.com/ato113/lockdiff/actions/workflows/ci.yml/badge.svg)](https://github.com/ato113/lockdiff/actions/workflows/ci.yml)
@@ -40,7 +42,16 @@ Major bumps and downgrades sit at the top where they get read. Routine patch
 bumps go in a collapsed section, so the comment stays short even when the
 lockfile churns.
 
-## Usage
+## Setup
+
+There is nothing to install. A GitHub Action lives in your repository as a
+workflow file, and GitHub runs it for you.
+
+**1.** In your repository, create the file `.github/workflows/dependencies.yml`.
+You can do this from the GitHub web interface: **Add file → Create new file**,
+then type that path as the filename.
+
+**2.** Paste this in and commit it:
 
 ```yaml
 name: Dependencies
@@ -62,8 +73,22 @@ jobs:
       - uses: ato113/lockdiff@v1
 ```
 
+**3.** Open a pull request that changes a lockfile. Within a minute or so the
+comment appears on it.
+
 That's the whole setup. The action finds every lockfile the pull request
 touches, works out what changed, and posts (or updates) one comment.
+
+Two details that matter:
+
+- **`fetch-depth: 0` is not optional.** Without it `actions/checkout` fetches
+  only the latest commit, so there is no earlier lockfile to compare against.
+  The action tells you so rather than silently reporting nothing.
+- **`pull-requests: write`** is what lets the action post the comment. Without
+  it the summary still appears in the Actions run summary, and the step does
+  not fail.
+
+## More ways to use it
 
 ### Block major bumps
 
