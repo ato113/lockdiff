@@ -1,0 +1,43 @@
+name: "lockdiff"
+description: "Turn an unreadable lockfile diff into a summary a reviewer can actually check."
+author: "ato113"
+
+branding:
+  icon: "package"
+  color: "blue"
+
+inputs:
+  github-token:
+    description: "Token used to post the pull request comment."
+    required: false
+    default: ${{ github.token }}
+  files:
+    description: "Lockfiles to inspect, one per line. Defaults to every lockfile the pull request touches."
+    required: false
+    default: ""
+  base:
+    description: "Ref to compare against. Defaults to the pull request base."
+    required: false
+    default: ""
+  comment:
+    description: "Post the summary as a pull request comment, updating it on later pushes."
+    required: false
+    default: "true"
+  fail-on-major:
+    description: "Fail the check when a major bump or a downgrade appears."
+    required: false
+    default: "false"
+
+outputs:
+  changed:
+    description: "Number of dependency changes found."
+  breaking:
+    description: "'true' when a major bump or a downgrade is present."
+  summary:
+    description: "One-line summary of the changes."
+  body:
+    description: "The full Markdown summary."
+
+runs:
+  using: "node20"
+  main: "dist/index.js"
